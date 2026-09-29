@@ -2,7 +2,6 @@ package dev.eyad_sharkawy.triage_desk.common.events;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.Instant;
 import java.util.UUID;
 
@@ -14,6 +13,4 @@ public record TicketCreatedEvent(
         @NotBlank String subject,
         @NotBlank String priority,
         @NotNull Instant createdAt,
-        @NotNull Instant slaDueAt
-) {
-}
+        @NotNull Instant slaDueAt) {}
