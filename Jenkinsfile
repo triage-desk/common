@@ -12,9 +12,15 @@ pipeline {
                 }
             }
             stages {
-                stage('Unit Tests') {
+                stage('Lint and Format') {
                     steps {
                         sh 'chmod +x ./mvnw'
+                        sh './mvnw spotless:check checkstyle:check'
+                    }
+                }
+
+                stage('Unit Tests') {
+                    steps {
                         sh './mvnw clean test'
                     }
                 }
