@@ -28,8 +28,10 @@ class TenantHeaderInterceptorTest {
         request = mock(HttpRequest.class);
         execution = mock(ClientHttpRequestExecution.class);
         headers = new HttpHeaders();
+        ClientHttpResponse response = mock(ClientHttpResponse.class);
+
         when(request.getHeaders()).thenReturn(headers);
-        when(execution.execute(request, new byte[0])).thenReturn(mock(ClientHttpResponse.class));
+        when(execution.execute(request, new byte[0])).thenReturn(response);
     }
 
     @AfterEach
@@ -53,8 +55,7 @@ class TenantHeaderInterceptorTest {
     void shouldNotAddTenantHeaderWhenContextIsEmpty() throws IOException {
         interceptor.intercept(request, new byte[0], execution);
 
-        assertThat(headers.asSingleValueMap())
-                .doesNotContainKey(TenantHeaderInterceptor.TENANT_HEADER);
+        assertThat(headers.getFirst(TenantHeaderInterceptor.TENANT_HEADER)).isNull();
         verify(execution).execute(request, new byte[0]);
     }
 }

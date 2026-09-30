@@ -45,4 +45,11 @@ class ProblemDetailFactoryTest {
                 ProblemDetailFactory.create(HttpStatus.BAD_REQUEST, "Validation failed", errors);
         assertThat(problem.getProperties()).containsEntry("errors", errors);
     }
+
+    @Test
+    void shouldInvokePrivateConstructorForCoverage() throws Exception {
+        var constructor = ProblemDetailFactory.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        assertThat(constructor.newInstance()).isNotNull();
+    }
 }

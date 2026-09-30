@@ -31,8 +31,10 @@ class OAuth2TokenInterceptorTest {
         request = mock(HttpRequest.class);
         execution = mock(ClientHttpRequestExecution.class);
         headers = new HttpHeaders();
+        ClientHttpResponse response = mock(ClientHttpResponse.class);
+
         when(request.getHeaders()).thenReturn(headers);
-        when(execution.execute(request, new byte[0])).thenReturn(mock(ClientHttpResponse.class));
+        when(execution.execute(request, new byte[0])).thenReturn(response);
     }
 
     @AfterEach
@@ -61,7 +63,20 @@ class OAuth2TokenInterceptorTest {
     void shouldNotAddBearerTokenWhenUnauthenticated() throws IOException {
         interceptor.intercept(request, new byte[0], execution);
 
-        assertThat(headers.asSingleValueMap()).doesNotContainKey(HttpHeaders.AUTHORIZATION);
+        assertThat(headers.getFirst(HttpHeaders.AUTHORIZATION)).isNull();
+        verify(execution).execute(request, new byte[0]);
+    }
+
+    @Test
+    void shouldNotAddBearerTokenWhenCredentialsNotJwt() throws IOException {
+        org.springframework.security.core.Authentication auth =
+                mock(org.springframework.security.core.Authentication.class);
+        when(auth.getCredentials()).thenReturn("not-a-jwt");
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        interceptor.intercept(request, new byte[0], execution);
+
+        assertThat(headers.getFirst(HttpHeaders.AUTHORIZATION)).isNull();
         verify(execution).execute(request, new byte[0]);
     }
 }

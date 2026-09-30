@@ -48,4 +48,19 @@ class TenantContextTest {
 
         assertThat(TenantContext.getTenantId()).isEqualTo(mainTenantId);
     }
+
+    @Test
+    void shouldClearTenantIdWhenPassingNull() {
+        TenantContext.setTenantId(UUID.randomUUID());
+        TenantContext.setTenantId(null);
+
+        assertThat(TenantContext.getTenantId()).isNull();
+    }
+
+    @Test
+    void shouldInvokePrivateConstructorForCoverage() throws Exception {
+        var constructor = TenantContext.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        assertThat(constructor.newInstance()).isNotNull();
+    }
 }
