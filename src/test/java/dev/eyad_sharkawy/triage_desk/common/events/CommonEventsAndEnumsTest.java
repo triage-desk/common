@@ -57,6 +57,7 @@ class CommonEventsAndEnumsTest {
     void shouldCoverEnums() {
         assertThat(TicketPriority.values())
                 .containsExactly(
+                        TicketPriority.NONE,
                         TicketPriority.LOW,
                         TicketPriority.MEDIUM,
                         TicketPriority.HIGH,
