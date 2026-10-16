@@ -1,6 +1,7 @@
 package dev.eyad_sharkawy.triage_desk.common.security;
 
 import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -10,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+@Slf4j
 public class OAuth2TokenInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
@@ -20,6 +22,7 @@ public class OAuth2TokenInterceptor implements ClientHttpRequestInterceptor {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.getCredentials() instanceof Jwt jwt) {
+            log.debug("Propagating Bearer JWT token to URI '{}'", request.getURI());
             request.getHeaders().setBearerAuth(jwt.getTokenValue());
         }
 
