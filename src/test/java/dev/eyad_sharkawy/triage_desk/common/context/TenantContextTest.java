@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 
 class TenantContextTest {
 
@@ -24,6 +25,7 @@ class TenantContextTest {
 
         assertThat(TenantContext.getTenantId()).isEqualTo(tenantId);
         assertThat(TenantContext.requireTenantId()).isEqualTo(tenantId);
+        assertThat(MDC.get(TenantContext.MDC_KEY)).isEqualTo(tenantId.toString());
     }
 
     @Test
@@ -55,6 +57,17 @@ class TenantContextTest {
         TenantContext.setTenantId(null);
 
         assertThat(TenantContext.getTenantId()).isNull();
+        assertThat(MDC.get(TenantContext.MDC_KEY)).isNull();
+    }
+
+    @Test
+    void shouldClearMdcOnClear() {
+        UUID tenantId = UUID.randomUUID();
+        TenantContext.setTenantId(tenantId);
+        assertThat(MDC.get(TenantContext.MDC_KEY)).isEqualTo(tenantId.toString());
+
+        TenantContext.clear();
+        assertThat(MDC.get(TenantContext.MDC_KEY)).isNull();
     }
 
     @Test
